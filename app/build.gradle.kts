@@ -48,11 +48,13 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
-    testLogging {
+  /*  testLogging {
         exceptionFormat = TestExceptionFormat.FULL
         events = mutableSetOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED)
         showStandardStreams = true
     }
+
+   */
     finalizedBy(tasks.jacocoTestReport)
 }
 
