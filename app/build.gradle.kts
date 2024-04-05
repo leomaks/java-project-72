@@ -24,6 +24,7 @@ repositories {
 
 dependencies {
     implementation ("org.apache.commons:commons-text:1.11.0")
+    implementation("org.postgresql:postgresql:42.7.2")
 
     testImplementation(platform("org.junit:junit-bom:5.10.1"))
     testImplementation ("org.junit.jupiter:junit-jupiter")
