@@ -8,7 +8,7 @@ RUN wget -q https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-b
     && unzip gradle-${GRADLE_VERSION}-bin.zip \
     && rm gradle-${GRADLE_VERSION}-bin.zip
 
-ENV GRADLE_HOME=/opt/gradle/gradle-8.3
+ENV GRADLE_HOME=/opt/gradle/
 
 RUN mv gradle-${GRADLE_VERSION} ${GRADLE_HOME}
 
