@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import hexlet.code.dto.BasePage;
+import hexlet.code.dto.UrlPage;
 import hexlet.code.dto.UrlsPage;
 import hexlet.code.model.Url;
 import hexlet.code.repositories.BaseRepository;
@@ -51,10 +53,10 @@ public class App {
 
 
     private static String getContent(InputStream is) throws IOException {
-     try (var reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-         return reader.lines().collect(Collectors.joining(System.lineSeparator()));
-     }
- }
+        try (var reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+            return reader.lines().collect(Collectors.joining(System.lineSeparator()));
+        }
+    }
 
     private static InputStream getFile(String fileName) {
         var classLoader = App.class.getClassLoader();
@@ -102,22 +104,43 @@ public class App {
             ctx.render("urls.jte", Collections.singletonMap("page", page));
         });
 
-        
+        app.get("/urls/{id}", ctx -> {
+            ///
+            var id = ctx.pathParam("id");
+            var url = UrlRepositories.find(Long.valueOf(id)).get();
+            var page = new UrlPage(url);
+            ctx.render("url.jte", Collections.singletonMap("page", page));
+
+        });
+
+
         app.post("/urls", ctx -> {
             try {
-                var name1 = ctx.formParamAsClass("name", String.class).get();
-                var url = new Url(name1);
-                UrlRepositories.save(url);
-                ctx.sessionAttribute("flash", "Course has been created!");
+                var name = ctx.formParamAsClass("name", String.class).get();
+                var parsedURL = new URL(name).toURI();
+                var host = parsedURL.getHost();
+                var port = parsedURL.getPort();
+                if (port != -1) {
+                    host = host + ":" + port;
+                }
+                if (UrlRepositories.findByName(host)) {
+                    ctx.sessionAttribute("flash", "Страница уже существует");
+                } else {
+                    var url = new Url(host);
+                    UrlRepositories.save(url);
+                    ctx.sessionAttribute("flash", "Страница успешно добавлена");
+                }
+
+               // var flash = ctx.consumeSessionAttribute("flash")
+                // Добавляем flash в определение CoursesPage
 
                 List<Url> urls;
                 urls = UrlRepositories.getEntities();
-
                 var page = new UrlsPage(urls);
+                page.setFlash(ctx.consumeSessionAttribute("flash"));
                 ctx.render("urls.jte", Collections.singletonMap("page", page));
 
-
-        } catch (ValidationException e) {
+            } catch (ValidationException e) {
                 ctx.sessionAttribute("flash", "Error, the item was not created");
             }
         });

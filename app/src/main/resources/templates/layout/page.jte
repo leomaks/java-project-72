@@ -30,6 +30,21 @@
 </header>
 <body>
 
+@if(page != null && page.getFlash() != null)
+    <p>
+    @if( page.getFlash().contains("уже"))
+        <div class="alert alert-danger" role="alert">
+            ${page.getFlash()}
+        </div>
+    @else
+        <div class="alert alert-success" role="alert">
+            ${page.getFlash()}
+        </div>
+    @endif
+
+    </p>
+@endif
+
 ${content}
 </body>
 

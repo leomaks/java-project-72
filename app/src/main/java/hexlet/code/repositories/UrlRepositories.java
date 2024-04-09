@@ -1,6 +1,5 @@
 package hexlet.code.repositories;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,7 +24,18 @@ public class UrlRepositories extends BaseRepository {
 
     ///
 
-
+    public static boolean findByName(String name) throws SQLException {
+        var sql = "SELECT * FROM urls WHERE name = ?";
+        try (var conn = dataSource.getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            var resultSet = stmt.executeQuery();
+            if (resultSet.next()) {
+                return true;
+            }
+            return false;
+        }
+    }
 ///////
     public static Optional<Url> find(Long id) throws SQLException {
         var sql = "SELECT * FROM urls WHERE id = ?";

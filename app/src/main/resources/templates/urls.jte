@@ -4,16 +4,18 @@
 
 @template.layout.page(page = page,
 
-
 content = @`
 
 
-    <table class="table table-primary table-striped table-bordered table-sm">
+
+
+    
+    <table class="table table-bordered table-hover mt-3">
 
         <thead>
         <tr>
             <th scope="col">Id</th>
-            <th scope="col">Course</th>
+            <th scope="col">URL</th>
 
         </tr>
         </thead>
@@ -22,7 +24,7 @@ content = @`
             <tbody>
             <tr>
                 <td>${url.getId()}</td>
-                <td><a href="/courses/${url.getId()}">${url.getName()}</a> </td>
+                <td><a href="/urls/${url.getId()}">${url.getName()}</a> </td>
             </tr>
             </tbody>
         @endfor
