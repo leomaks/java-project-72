@@ -1,22 +1,32 @@
 package hexlet.code.repositories;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import hexlet.code.model.Url;
+
 public class UrlRepositories extends BaseRepository {
+
     public static void save(Url url) throws SQLException {
         String sql = "INSERT INTO urls (name, created_at) VALUES (?, ?)";
         try (var conn = dataSource.getConnection();
-             var preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             var preparedStatement = conn.prepareStatement(sql)) {
             preparedStatement.setString(1, url.getName());
-            preparedStatement.setTimestamp(2, url.getCreatedAt());
+            var createdAt = new Timestamp(new Date().getTime());
+            preparedStatement.setTimestamp(2, createdAt);
             preparedStatement.executeUpdate();
+
         }
     }
 
+    ///
+
+
+///////
     public static Optional<Url> find(Long id) throws SQLException {
         var sql = "SELECT * FROM urls WHERE id = ?";
         try (var conn = dataSource.getConnection();

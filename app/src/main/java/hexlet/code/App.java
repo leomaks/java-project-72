@@ -1,13 +1,23 @@
 package hexlet.code;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import hexlet.code.dto.BasePage;
+import hexlet.code.dto.UrlsPage;
+import hexlet.code.model.Url;
 import hexlet.code.repositories.BaseRepository;
+import hexlet.code.repositories.UrlRepositories;
 import io.javalin.Javalin;
 import io.javalin.rendering.template.JavalinJte;
+import io.javalin.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 
 import com.zaxxer.hikari.HikariConfig;
@@ -32,19 +42,43 @@ public class App {
         String port = System.getenv().getOrDefault("PORT", "7070");
         return Integer.valueOf(port);
     }
+
     static String getBD() {
         String bd = System.getenv().getOrDefault("JDBC_DATABASE_URL",
                 "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;");
         return bd;
     }
+
+
+    private static String getContent(InputStream is) throws IOException {
+     try (var reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+         return reader.lines().collect(Collectors.joining(System.lineSeparator()));
+     }
+ }
+
+    private static InputStream getFile(String fileName) {
+        var classLoader = App.class.getClassLoader();
+        var inputStream = classLoader.getResourceAsStream(fileName);
+        return inputStream;
+    }
+
+
     public static Javalin getApp() throws IOException, SQLException {
 
         var hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(getBD());
 
         var dataSource = new HikariDataSource(hikariConfig);
-        BaseRepository.dataSource = dataSource;
+        var sql = getContent(getFile("schema.sql"));
 
+        log.info(sql);
+
+        try (var connection = dataSource.getConnection();
+             var statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
+
+        BaseRepository.dataSource = dataSource;
 
 
         var app = Javalin.create(config -> {
@@ -53,21 +87,47 @@ public class App {
         });
 
 
-      //  app.get("/", ctx -> ctx.result("Hello World"));
-//        ctx.render("index.jte", Collections.singletonMap("page", page));
-
         app.get("/", ctx -> {
             var page = new BasePage();
             page.setFlash(ctx.consumeSessionAttribute("flash"));
             ctx.render("index.jte", Collections.singletonMap("page", page));
         });
 
+        app.get("/urls", ctx -> {
+
+            List<Url> urls;
+            urls = UrlRepositories.getEntities();
+
+            var page = new UrlsPage(urls);
+            ctx.render("urls.jte", Collections.singletonMap("page", page));
+        });
+
+        
+        app.post("/urls", ctx -> {
+            try {
+                var name1 = ctx.formParamAsClass("name", String.class).get();
+                var url = new Url(name1);
+                UrlRepositories.save(url);
+                ctx.sessionAttribute("flash", "Course has been created!");
+
+                List<Url> urls;
+                urls = UrlRepositories.getEntities();
+
+                var page = new UrlsPage(urls);
+                ctx.render("urls.jte", Collections.singletonMap("page", page));
+
+
+        } catch (ValidationException e) {
+                ctx.sessionAttribute("flash", "Error, the item was not created");
+            }
+        });
+
 
         log.info("Hello, World error");
 
-
         return app;
     }
+
     public static void main(String[] args) throws IOException, SQLException {
         var app = getApp();
         app.start(getPort());
