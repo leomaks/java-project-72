@@ -17,22 +17,27 @@
 </head>
 
 <header class="p-3 bg-dark text-white">
-    <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="/" class="nav-link px-2 text-white">Главная страница</a></li>
-                <li><a href="/urls" class="nav-link px-2 text-white">Список сайтов </a></li>
-                <li><a href="/check" class="nav-link px-2 text-white">Проверить сайт</a></li>
-            </ul>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Анализатор страниц</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav">
+                    <a class="nav-link" href="/">Главная</a>
+                    <a class="nav-link" href="/urls">Сайты</a>
+                </div>
+            </div>
         </div>
-    </div>
+    </nav>
 </header>
 <body>
 
 @if(page != null && page.getFlash() != null)
     <p>
-    @if( page.getFlash().contains("уже"))
+    @if( page.getFlash().contains("уже") || page.getFlash().contains("Некорректный") )
         <div class="alert alert-danger" role="alert">
             ${page.getFlash()}
         </div>
