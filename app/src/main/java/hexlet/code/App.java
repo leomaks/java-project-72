@@ -89,8 +89,6 @@ public class App {
         app.post(NamedRoutes.urlsPath(), UrlController::add);
 
 
-        log.info("Hello, World error");
-
         return app;
     }
 

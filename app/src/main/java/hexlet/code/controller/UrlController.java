@@ -4,7 +4,7 @@ import hexlet.code.dto.BasePage;
 import hexlet.code.dto.UrlPage;
 import hexlet.code.dto.UrlsPage;
 import hexlet.code.model.Url;
-import hexlet.code.repositories.UrlRepositories;
+import hexlet.code.repositories.UrlsRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
 import java.net.URI;
@@ -23,7 +23,7 @@ public class UrlController {
 
     public static  void urls(Context ctx) throws SQLException {
         List<Url> urls;
-        urls = UrlRepositories.getEntities();
+        urls = UrlsRepository.getEntities();
         var page = new UrlsPage(urls);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         ctx.render("urls.jte", Collections.singletonMap("page", page));
@@ -31,44 +31,46 @@ public class UrlController {
 
     public static void show(Context ctx) throws SQLException {
         var id = ctx.pathParam("id");
-        var url = UrlRepositories.find(Long.valueOf(id)).get();
+        var url = UrlsRepository.find(Long.valueOf(id)).get();
         var page = new UrlPage(url);
         ctx.render("url.jte", Collections.singletonMap("page", page));
     }
 
     public static void add(Context ctx) throws SQLException {
+
+        var name = ctx.formParamAsClass("url", String.class).get();
+
+        URL parsedUrl;
         try {
-            var name = ctx.formParamAsClass("url", String.class).get();
-
-            URL parsedURL;
-            try {
-                parsedURL = new URI(name).toURL();
-            } catch (Exception e) {
-                ctx.sessionAttribute("flash", "Некорректный URL");
-                ctx.redirect(NamedRoutes.homePath());
-                return;
-            }
-            var host = parsedURL.getHost();
-            var port = parsedURL.getPort();
-
-            if (port != -1) {
-                host = host + ":" + port;
-            }
-            if (UrlRepositories.findByName(host)) {
-                ctx.sessionAttribute("flash", "Страница уже существует");
-            } else {
-                var url = new Url(host);
-                UrlRepositories.save(url);
-                ctx.sessionAttribute("flash", "Страница успешно добавлена");
-            }
-            ctx.redirect(NamedRoutes.urlsPath());
-
+            parsedUrl = new URI(name).toURL();
         } catch (Exception e) {
-
             ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.redirect(NamedRoutes.homePath());
+            return;
+        }
+
+        String normalizedUrl = String
+                .format(
+                        "%s://%s%s",
+                        parsedUrl.getProtocol(),
+                        parsedUrl.getHost(),
+                        parsedUrl.getPort() == -1 ? "" : ":" + parsedUrl.getPort()
+                )
+                .toLowerCase();
+
+
+        if (UrlsRepository.findByName(normalizedUrl)) {
+
+            ctx.sessionAttribute("flash", "Страница уже существует");
+
+        } else {
+
+            var url = new Url(normalizedUrl);
+            UrlsRepository.save(url);
+            ctx.sessionAttribute("flash", "Страница успешно добавлена");
 
         }
+        ctx.redirect(NamedRoutes.urlsPath());
 
     }
 

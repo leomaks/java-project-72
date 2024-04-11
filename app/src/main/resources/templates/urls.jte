@@ -7,7 +7,7 @@
 content = @`
 
 
-
+<h1>Список сайтов</h1>
 
     
     <table class="table table-bordered table-hover mt-3">

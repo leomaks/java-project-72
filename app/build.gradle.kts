@@ -35,27 +35,27 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.16.1")
 
 
-    implementation("org.slf4j:slf4j-simple:2.0.9")
+//    implementation("org.slf4j:slf4j-simple:2.0.9")
     implementation("io.javalin:javalin:6.1.3")
     implementation("io.javalin:javalin-bundle:6.1.3")
     implementation("io.javalin:javalin-rendering:6.1.3")
 
     implementation("gg.jte:jte:3.1.9")
 ///
-    implementation ("org.slf4j:slf4j-api:2.0.7")
-    implementation ("org.slf4j:slf4j-log4j12:2.0.7")
+
     implementation ("org.projectlombok:lombok:1.18.26")
 }
 
 tasks.test {
     useJUnitPlatform()
-  /*  testLogging {
+
+    testLogging {
         exceptionFormat = TestExceptionFormat.FULL
         events = mutableSetOf(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED)
+        // showStackTraces = true
+        // showCauses = true
         showStandardStreams = true
     }
-
-   */
     finalizedBy(tasks.jacocoTestReport)
 }
 
@@ -67,8 +67,8 @@ tasks.withType<Test> {
 tasks.jacocoTestReport {
     reports {
         xml.required.set(true)
-      //  csv.required.set(true)
-      //  html.required.set(true)
+        csv.required.set(true)
+        html.required.set(true)
     }
 }
 

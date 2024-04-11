@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import hexlet.code.model.Url;
 
-public class UrlRepositories extends BaseRepository {
+public class UrlsRepository extends BaseRepository {
 
     public static void save(Url url) throws SQLException {
         String sql = "INSERT INTO urls (name, created_at) VALUES (?, ?)";
@@ -36,7 +36,20 @@ public class UrlRepositories extends BaseRepository {
             return false;
         }
     }
-///////
+
+    public static String findIdByName(String name) throws SQLException {
+        var sql = "SELECT * FROM urls WHERE name = ?";
+        try (var conn = dataSource.getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            var resultSet = stmt.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getString("id");
+            }
+            return null;
+        }
+    }
+
     public static Optional<Url> find(Long id) throws SQLException {
         var sql = "SELECT * FROM urls WHERE id = ?";
         try (var conn = dataSource.getConnection();
