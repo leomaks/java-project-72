@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 //import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -21,7 +23,7 @@ public class TestCheck {
     @BeforeEach
     public final void setUp() throws SQLException, IOException {
         app = App.getApp();
-        //MockWebServer server = new MockWebServer();
+        MockWebServer server = new MockWebServer();
     }
 
     @Test

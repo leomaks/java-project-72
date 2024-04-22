@@ -38,12 +38,11 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.16.1")
 
 
-   // implementation("com.mashape.unirest:unirest-java:4.3.0")
+
 
     implementation("org.jsoup:jsoup:1.16.2")
 
-    implementation( "com.googlecode.json-simple:json-simple:1.1.1")
-
+   // testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
     implementation("com.konghq:unirest-java:3.14.1")
 

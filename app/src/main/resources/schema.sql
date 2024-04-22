@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS url_checks;
 DROP TABLE IF EXISTS urls;
 
 CREATE TABLE urls (
@@ -6,7 +7,6 @@ CREATE TABLE urls (
     created_at Timestamp
 );
 
-DROP TABLE IF EXISTS url_checks;
 
 CREATE TABLE url_checks (
     id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -17,7 +17,5 @@ CREATE TABLE url_checks (
     url_id bigint REFERENCES urls(id) ON DELETE CASCADE,
     created_at Timestamp
 );
-
-
 
 
