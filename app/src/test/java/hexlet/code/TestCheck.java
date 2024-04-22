@@ -1,6 +1,37 @@
 package hexlet.code;
 
+//import hexlet.code.model.Url;
+//import hexlet.code.repositories.UrlsRepository;
+import hexlet.code.util.NamedRoutes;
+import io.javalin.Javalin;
+import io.javalin.testtools.JavalinTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.sql.SQLException;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+//import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class TestCheck {
+    Javalin app;
+
+    @BeforeEach
+    public final void setUp() throws SQLException, IOException {
+        app = App.getApp();
+        //MockWebServer server = new MockWebServer();
+    }
+
+    @Test
+    public void testMainPage() {
+        JavalinTest.test(app, (server, client) -> {
+            var response = client.get(NamedRoutes.homePath());
+            assertThat(response.code()).isEqualTo(200);
+            assertTrue((response.body()).string().contains("Бесплатно проверяйте сайты на SEO пригодность"));
+        });
+    }
 }
 
 /* Создаём инстанс `MockWebServer`. Вызвав на созданном инстансе метод `mockServer.url("/").toString()`
@@ -9,7 +40,8 @@ public class TestCheck {
 Это и есть та фейковая страница, а точнее её содержимое (html), с которой будет работать наше приложение в тестах
 3. Добавляем инстанс MockResponse в очередь к созданному серверу
 4. Запускаем сервер
-5. После выполнения тестов обязательно нужно остановить сервер. Воспользуйтесь аннотациями `@BeforeAll` и `@AfterAll` в тестах
+5. После выполнения тестов обязательно нужно остановить сервер.
+Воспользуйтесь аннотациями `@BeforeAll` и `@AfterAll` в тестах
 
 
 public void test() throws Exception {
