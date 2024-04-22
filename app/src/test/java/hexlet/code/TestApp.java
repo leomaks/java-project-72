@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestApp {
     Javalin app;
+
     @BeforeEach
     public final void setUp() throws SQLException, IOException {
         app = App.getApp();

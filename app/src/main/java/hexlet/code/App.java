@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.stream.Collectors;
 
+import hexlet.code.controller.UrlCheckController;
 import hexlet.code.controller.UrlController;
 import hexlet.code.repositories.BaseRepository;
 import hexlet.code.util.NamedRoutes;
@@ -87,6 +88,8 @@ public class App {
         app.get(NamedRoutes.urlsPath(), UrlController::urls);
         app.get(NamedRoutes.urlPath("{id}"), UrlController::show);
         app.post(NamedRoutes.urlsPath(), UrlController::add);
+
+        app.post(NamedRoutes.urlCheckPath("{id}"), UrlCheckController::check);
 
 
         return app;

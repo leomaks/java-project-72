@@ -4,6 +4,7 @@ import hexlet.code.dto.BasePage;
 import hexlet.code.dto.UrlPage;
 import hexlet.code.dto.UrlsPage;
 import hexlet.code.model.Url;
+import hexlet.code.repositories.UrlChecksRepository;
 import hexlet.code.repositories.UrlsRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.http.Context;
@@ -24,7 +25,10 @@ public class UrlController {
     public static  void urls(Context ctx) throws SQLException {
         List<Url> urls;
         urls = UrlsRepository.getEntities();
-        var page = new UrlsPage(urls);
+        var lastChecks = UrlChecksRepository.findLastChecks();
+
+
+        var page = new UrlsPage(urls, lastChecks);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         ctx.render("urls.jte", Collections.singletonMap("page", page));
     }
@@ -74,46 +78,6 @@ public class UrlController {
 
     }
 
-
-  /*
-    public static void build(Context ctx) {
-
-        var page = new BuildCoursePage();
-        ctx.render("courses/build.jte", Collections.singletonMap("page", page));
-    }
-
-    public static void show(Context ctx) throws SQLException {
-        var id = ctx.pathParam("id");
-        var course = CoursesRepository.find(Long.valueOf(id)).get();
-        var page = new CoursePage(course);
-        ctx.render("courses/index.jte", Collections.singletonMap("page", page));
-    }
-    public  static void create(Context ctx) throws SQLException {
-        try {
-
-            var name = ctx.formParamAsClass("name", String.class)
-                    .check(value -> value.length() > 2, "У названия недостаточная длина")
-                    .get();
-            var description = ctx.formParamAsClass("description", String.class)
-                    .check(value -> value.length() > 10, "У описания недостаточная длина")
-                    .get();
-
-
-            var course = new Course(name, description);
-            CoursesRepository.save(course);
-            ctx.sessionAttribute("flash", "Course has been created!");
-            ctx.redirect(NamedRoutes.coursesPath());
-
-        } catch (ValidationException e) {
-            var page = new BuildCoursePage(e.getErrors());
-            ctx.sessionAttribute("flash", "Error, the item was not created");
-            page.setFlash(ctx.consumeSessionAttribute("flash"));
-            ctx.render("courses/build.jte", Collections.singletonMap("page", page));
-        }
-    }
-
-   */
-
-
 }
+
 

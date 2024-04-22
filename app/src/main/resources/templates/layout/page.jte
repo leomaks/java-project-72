@@ -34,10 +34,8 @@
     </nav>
 </header>
 <body>
-
 @if(page != null && page.getFlash() != null)
-    <p>
-    @if( page.getFlash().contains("уже") || page.getFlash().contains("Некорректный") )
+    <p>@if( page.getFlash().contains("уже") || page.getFlash().contains("Некорректный") )
         <div class="alert alert-danger" role="alert">
             ${page.getFlash()}
         </div>
@@ -45,9 +43,7 @@
         <div class="alert alert-success" role="alert">
             ${page.getFlash()}
         </div>
-    @endif
-
-    </p>
+    @endif </p>
 @endif
 
 ${content}
