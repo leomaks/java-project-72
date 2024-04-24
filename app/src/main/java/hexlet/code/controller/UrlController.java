@@ -35,7 +35,9 @@ public class UrlController {
 
         var id = ctx.pathParam("id");
         var url = UrlsRepository.find(Long.valueOf(id)).get();
-        var page = new UrlPage(url);
+
+        var urlChecks = UrlChecksRepository.getCheckedUrls(url.getId());
+        var page = new UrlPage(url, urlChecks);
         ctx.render("url.jte", Collections.singletonMap("page", page));
 
     }

@@ -11,13 +11,13 @@ import org.jsoup.nodes.Document;
 import kong.unirest.Unirest;
 import java.sql.SQLException;
 import java.util.Collections;
-import java.util.List;
+
 
 public class UrlCheckController {
 
     public static  void showChecks(Url url, Context ctx) throws SQLException {
-        List<UrlCheck> urlChecks;
-        urlChecks = UrlChecksRepository.getCheckedUrls(url.getId());
+
+        var urlChecks = UrlChecksRepository.getCheckedUrls(url.getId());
         var page = new UrlPage(url, urlChecks);
         ctx.sessionAttribute("flash", "Страница успешно проверена");
         page.setFlash(ctx.consumeSessionAttribute("flash"));
