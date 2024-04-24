@@ -22,6 +22,7 @@ public class TestApp {
     public final void setUp() throws SQLException, IOException {
         app = App.getApp();
     }
+
     @Test
     public void testMainPage() {
         JavalinTest.test(app, (server, client) -> {
@@ -30,6 +31,7 @@ public class TestApp {
             assertTrue((response.body()).string().contains("Бесплатно проверяйте сайты на SEO пригодность"));
         });
     }
+
 
     @Test
     public void testUrlsPage() {

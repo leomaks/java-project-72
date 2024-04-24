@@ -15,7 +15,6 @@ import java.util.List;
 
 public class UrlCheckController {
 
-
     public static  void showChecks(Url url, Context ctx) throws SQLException {
         List<UrlCheck> urlChecks;
         urlChecks = UrlChecksRepository.getCheckedUrls(url.getId());
@@ -33,7 +32,6 @@ public class UrlCheckController {
         int statusCode = response.getStatus();
         Document doc = Jsoup.parse(response.getBody());
 
-
         String title = doc.title();
         String h1 = doc.selectFirst("h1") != null
                 ? doc.selectFirst("h1").text() : "";
@@ -44,7 +42,6 @@ public class UrlCheckController {
         var urlChecked = new UrlCheck(statusCode, title, h1, description, Long.valueOf(id));
         UrlChecksRepository.save(urlChecked);
         showChecks(url, ctx);
-
     }
 }
 

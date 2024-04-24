@@ -9,5 +9,6 @@ public class BasePage {
     private String flash;
 
     public BasePage() {
+
     }
 }

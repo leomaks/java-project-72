@@ -12,7 +12,6 @@ import java.net.URI;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Collections;
-import java.util.List;
 
 public class UrlController {
 
@@ -23,10 +22,9 @@ public class UrlController {
     }
 
     public static  void urls(Context ctx) throws SQLException {
-        List<Url> urls;
-        urls = UrlsRepository.getEntities();
-        var lastChecks = UrlChecksRepository.findLastChecks();
 
+        var urls = UrlsRepository.getEntities();
+        var lastChecks = UrlChecksRepository.findLastChecks();
 
         var page = new UrlsPage(urls, lastChecks);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
@@ -34,10 +32,12 @@ public class UrlController {
     }
 
     public static void show(Context ctx) throws SQLException {
+
         var id = ctx.pathParam("id");
         var url = UrlsRepository.find(Long.valueOf(id)).get();
         var page = new UrlPage(url);
         ctx.render("url.jte", Collections.singletonMap("page", page));
+
     }
 
     public static void add(Context ctx) throws SQLException {
@@ -62,7 +62,6 @@ public class UrlController {
                 )
                 .toLowerCase();
 
-
         if (UrlsRepository.findByName(normalizedUrl)) {
 
             ctx.sessionAttribute("flash", "Страница уже существует");
@@ -74,6 +73,7 @@ public class UrlController {
             ctx.sessionAttribute("flash", "Страница успешно добавлена");
 
         }
+
         ctx.redirect(NamedRoutes.urlsPath());
 
     }

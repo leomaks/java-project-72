@@ -77,20 +77,16 @@ public class App {
 
         BaseRepository.dataSource = dataSource;
 
-
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
 
-
         app.get(NamedRoutes.homePath(), UrlController::index);
         app.get(NamedRoutes.urlsPath(), UrlController::urls);
         app.get(NamedRoutes.urlPath("{id}"), UrlController::show);
         app.post(NamedRoutes.urlsPath(), UrlController::add);
-
         app.post(NamedRoutes.urlCheckPath("{id}"), UrlCheckController::check);
-
 
         return app;
     }
