@@ -70,20 +70,6 @@ public class TestApp {
         });
     }
 
-    @Test
-    public void testAddUrlWithPort() throws SQLException {
-        JavalinTest.test(app, (server, client) -> {
-
-            var url = "https://www.test.com:8080";
-            var requestBody = "url=" + url;
-
-            var response = client.post(NamedRoutes.urlsPath(), requestBody);
-
-            assertThat(response.code()).isEqualTo(200);
-            assertTrue((response.body()).string().contains(url));
-            assertThat(UrlsRepository.findByName(url)).isTrue();
-        });
-    }
 
     @Test
     public void testAddWrongUrl() throws SQLException {

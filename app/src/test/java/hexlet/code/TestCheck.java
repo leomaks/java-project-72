@@ -1,6 +1,7 @@
 package hexlet.code;
 
 import hexlet.code.model.Url;
+import hexlet.code.repositories.UrlChecksRepository;
 import hexlet.code.repositories.UrlsRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
@@ -66,8 +67,15 @@ public class TestCheck {
                     .contains("This is h1 test")
                     .contains("Here is description");
 
-            assertThat(responseBody)
-                    .doesNotContain("jkkkkkkkkkkkkkkkj");
+            var urlInBD = UrlsRepository.find(Long.valueOf(id)).get();
+            var urlsCheckListInBD = UrlChecksRepository.getCheckedUrls(Long.valueOf(id));
+            var urlCheck = urlsCheckListInBD.get(0);
+
+            assertThat(urlInBD.getName()).contains("/test");
+            assertThat(urlCheck.getH1()).isEqualTo("This is h1 test");
+            assertThat(urlCheck.getDescription()).isEqualTo("Here is description");
+            assertThat(urlCheck.getTitle()).isEqualTo("This is test title");
+
 
         });
 

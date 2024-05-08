@@ -35,51 +35,62 @@ public class UrlController {
 
         var id = ctx.pathParam("id");
         var url = UrlsRepository.find(Long.valueOf(id)).get();
-
         var urlChecks = UrlChecksRepository.getCheckedUrls(url.getId());
+        String k = ctx.consumeSessionAttribute("flash");
         var page = new UrlPage(url, urlChecks);
+        page.setFlash(k);
         ctx.render("url.jte", Collections.singletonMap("page", page));
 
     }
 
-    public static void add(Context ctx) throws SQLException {
-
-        var name = ctx.formParamAsClass("url", String.class).get();
+    public static String normalizeURL(String name)  throws Exception {
 
         URL parsedUrl;
         try {
             parsedUrl = new URI(name).toURL();
+            String normalizedUrl = String
+                    .format(
+                            "%s://%s%s",
+                            parsedUrl.getProtocol(),
+                            parsedUrl.getHost(),
+                            parsedUrl.getPort() == -1 ? "" : ":" + parsedUrl.getPort()
+                    )
+                    .toLowerCase();
+
+            return normalizedUrl;
+
         } catch (Exception e) {
-            ctx.sessionAttribute("flash", "Некорректный URL");
-            ctx.redirect(NamedRoutes.homePath());
-            return;
+            throw new Exception();
         }
-
-        String normalizedUrl = String
-                .format(
-                        "%s://%s%s",
-                        parsedUrl.getProtocol(),
-                        parsedUrl.getHost(),
-                        parsedUrl.getPort() == -1 ? "" : ":" + parsedUrl.getPort()
-                )
-                .toLowerCase();
-
-        if (UrlsRepository.findByName(normalizedUrl)) {
-
-            ctx.sessionAttribute("flash", "Страница уже существует");
-
-        } else {
-
-            var url = new Url(normalizedUrl);
-            UrlsRepository.save(url);
-            ctx.sessionAttribute("flash", "Страница успешно добавлена");
-
-        }
-
-        ctx.redirect(NamedRoutes.urlsPath());
 
     }
 
+    public static void add(Context ctx) throws Exception {
+
+        var name = ctx.formParamAsClass("url", String.class).get();
+
+        try {
+            var normalizedUrl = normalizeURL(name);
+
+            
+            if (UrlsRepository.findByName(normalizedUrl)) {
+                ctx.sessionAttribute("flash", "Страница уже существует");
+            } else {
+                var url = new Url(normalizedUrl);
+                UrlsRepository.save(url);
+                ctx.sessionAttribute("flash", "Страница успешно добавлена");
+            }
+
+            ctx.redirect(NamedRoutes.urlsPath());
+
+
+        } catch (Exception e) {
+
+            ctx.sessionAttribute("flash", "Некорректный URL");
+            ctx.redirect(NamedRoutes.homePath());
+
+        }
+    }
 }
 
 
