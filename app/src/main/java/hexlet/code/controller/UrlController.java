@@ -72,7 +72,6 @@ public class UrlController {
         try {
             var normalizedUrl = normalizeURL(name);
 
-            
             if (UrlsRepository.findByName(normalizedUrl)) {
                 ctx.sessionAttribute("flash", "Страница уже существует");
             } else {
