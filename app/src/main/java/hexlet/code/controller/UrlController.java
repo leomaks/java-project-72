@@ -68,27 +68,27 @@ public class UrlController {
     public static void add(Context ctx) throws Exception {
 
         var name = ctx.formParamAsClass("url", String.class).get();
+        String normalizedUrl = "";
 
         try {
-            var normalizedUrl = normalizeURL(name);
-
-            if (UrlsRepository.findByName(normalizedUrl)) {
-                ctx.sessionAttribute("flash", "Страница уже существует");
-            } else {
-                var url = new Url(normalizedUrl);
-                UrlsRepository.save(url);
-                ctx.sessionAttribute("flash", "Страница успешно добавлена");
-            }
-
-            ctx.redirect(NamedRoutes.urlsPath());
-
-
+            normalizedUrl = normalizeURL(name);
         } catch (Exception e) {
 
             ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.redirect(NamedRoutes.homePath());
 
         }
+
+        if (UrlsRepository.findByName(normalizedUrl)) {
+            ctx.sessionAttribute("flash", "Страница уже существует");
+        } else {
+            var url = new Url(normalizedUrl);
+            UrlsRepository.save(url);
+            ctx.sessionAttribute("flash", "Страница успешно добавлена");
+        }
+
+        ctx.redirect(NamedRoutes.urlsPath());
+
     }
 }
 
